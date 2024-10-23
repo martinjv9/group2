@@ -1,5 +1,6 @@
 <?php
 
+    // Edit these to work for your DataBase
     $host = "localhost";
     $username = "root";
     $password = "***REMOVED***";
