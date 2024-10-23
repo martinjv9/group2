@@ -1,9 +1,11 @@
 <?php
 
+    // Edit these to work for your DataBase
     $host = "localhost";
+    $dbname = "cs424";
     $username = "root";
     $password = "***REMOVED***";
-    $dbname = "cs424";
+
 
 try {
     // Create a new PDO instance with a DSN (Data Source Name)

@@ -10,16 +10,21 @@ function login($user, $password): void
     $passwordHash = $user['password_hash'];
 
     if(password_verify($salt . $password, $passwordHash)){
-        $loginCount = $user['login_count'] + 1;
+        session_start();
 
-        echo "\"Hi, {$user['first_name']} {$user['last_name']}\", \"You have logged in {$loginCount} times\" and \"Last login date: {$user['last_login']}\"";
+        session_regenerate_id();
 
-        $updateStmt = $pdo->prepare("UPDATE users SET login_count = login_count + 1, last_login = now(), login_attemps = 0 WHERE idusers = ?");
-        $updateStmt->execute([$user['idusers']]);
+        $_SESSION["user_id"] = $user["idusers"];
+
+        header("Location: ../views/index.php");
+        exit;
+
     } else {
         $updateStmt = $pdo->prepare("UPDATE users SET login_attemps = login_attemps + 1, last_login = now() WHERE idusers = ?");
         $updateStmt->execute([$user['idusers']]);
-        echo "<br>" . "Invalid credentials";
+        echo "<div class=\"container\"><p>Invalid Credentials</p><form action='../views/login.php' method='get'><div class=\"form-group\">
+                <button type='submit' name='submit' class=\"btn btn-primary\">Go Back to login</button></div>
+              </form></div>";
     }
 }
 
@@ -77,7 +82,10 @@ if(isset($_POST['submit'])){
                 login($user, $password);
             }
         } else {
-            echo "User not found";
+            echo "<p>Invalid Credentials</p><form action='../views/login.php' method='get'>
+                <button type='submit' name='submit' class='btn btn-primary'>Go Back to login</button>
+              </form>";
         }
     }
+
 }

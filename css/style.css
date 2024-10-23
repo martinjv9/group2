@@ -12,3 +12,7 @@ body {
 .form-group {
     margin-bottom: 30px;
 }
+
+span {
+    color: red;
+}

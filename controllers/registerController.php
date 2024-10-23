@@ -3,10 +3,11 @@ global $conn, $pdo;
 include('../includes/header.php');
 include('../includes/config.php');
 
+
 $isValid = true;
 $errArray = array(); // To store error messages
 
-if(isset($_POST['submit'])){ // Check if submit button was clicked
+if($_SERVER["REQUEST_METHOD"] == "POST"){ // Check if submit button was clicked
     $firstName = $_POST['firstName'];
 
     // Validate first name
@@ -28,9 +29,8 @@ if(isset($_POST['submit'])){ // Check if submit button was clicked
     $username = $_POST['username'];
 
     // Validate username
-    if (preg_match('/^[a-zA-Z0-9]{7,50}$/', $username)) {
-        echo "Username is valid.";
-    } else {
+    if (! preg_match('/^[a-zA-Z0-9]{7,50}$/', $username)) {
+        $isValid = false;
         $errArray['username'] = "Username invalid";
     }
 
@@ -64,11 +64,22 @@ if(isset($_POST['submit'])){ // Check if submit button was clicked
         $errArray['email'] = "Email already exists";
     }
 
-    $password = $_POST['password'];
-    $confirmPassword = $_POST['password_confirmation'];
+    if(strlen($_POST['password']) < 8){
+        $isValid = false;
+        $errArray['passwordLength'] = "Password must be at least 8 characters";
+    }
 
+    if(! preg_match("/[a-z]/", $_POST['password'])) {
+        $isValid = false;
+        $errArray['passwordChar'] = "Password must contain at least one letter";
+    }
+
+    if(! preg_match("/[0-9]/", $_POST['password'])) {
+        $isValid = false;
+        $errArray['passwordChar'] = "Password must contain at least one one number";
+    }
     // Validate passwords match
-    if($password != $confirmPassword){
+    if($_POST["password"] !== $_POST["password_confirmation"]){
         $isValid = false;
         $errArray['password'] = "Passwords do not match.";
     }
@@ -76,7 +87,7 @@ if(isset($_POST['submit'])){ // Check if submit button was clicked
     if($isValid){
         $length = 16;
         $salt = bin2hex(random_bytes($length)); // Generate a random Salt
-        $hashed_password = password_hash($salt . $password, PASSWORD_DEFAULT);
+        $hashed_password = password_hash($salt . $_POST["password"], PASSWORD_DEFAULT);
         // echo("password hashed");
 
         $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, birth_date, username, email, salt, password_hash) VALUES (?, ?, ?, ?, ?, ?, ?)");
