@@ -12,7 +12,8 @@
             <span id="lastName_error"></span>
         </div>
         <div class="form-group">
-            <input type="date" name="birthday" class="form-control" placeholder="Date of Birth" >
+            <input type="date" name="birthday" class="form-control" placeholder="Date of Birth" id="birthday">
+            <span id="birthday_error"></span>
         </div>
         <div class="form-group">
             <input type="text" name="username" class="form-control" placeholder="Username" id="username">

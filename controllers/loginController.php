@@ -61,7 +61,7 @@ function timeout($user, $username) {
 }
 
 
-if(isset($_POST['submit'])){
+if(isset($_POST['login_submit'])){
     $username = $_POST['username'];
     $password = $_POST['password'];
 

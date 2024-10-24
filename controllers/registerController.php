@@ -3,7 +3,6 @@ global $conn, $pdo;
 include('../includes/header.php');
 include('../includes/config.php');
 
-
 $isValid = true;
 $errArray = array(); // To store error messages
 
@@ -33,17 +32,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){ // Check if submit button was clicked
         $isValid = false;
         $errArray['username'] = "Username invalid";
     }
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt->execute(['username' => $username]);
+        $user = $stmt->fetch();
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
-
-    $stmt->execute(['username' => $username]);
-
-    $user = $stmt->fetch();
-
-    if($user){
-        $isValid = false;
-        $errArray['username'] = "Username already exists";
+        if($user){
+            $isValid = false;
+            $errArray['username'] = "Username already exists";
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
+
 
     $email = $_POST['email'];
 
@@ -83,6 +84,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){ // Check if submit button was clicked
         $isValid = false;
         $errArray['password'] = "Passwords do not match.";
     }
+
+    // TODO: SECURITY QUESTIONS AND ANSWER
 
     if($isValid){
         $length = 16;
