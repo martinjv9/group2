@@ -13,8 +13,8 @@
         </div>
         <button type="submit" class="btn btn-primary" name="login_submit">Login</button>
         <input type="button" class="btn btn-primary" value="New User? Sign Up" onclick="location.href='register.php'">
-        <input type="button" class="btn btn-primary" value="Forgot Username or Password?" onclick="location.href='forgotPasswordUsername.php'">
     </form>
+    <a href="../views/forgotPasswordUsername.php">Forgot Username or Password?</a>
 </div>
 
 <?php include('../includes/footer.php'); ?>

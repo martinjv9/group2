@@ -1,5 +1,5 @@
 <?php
-global $conn, $pdo;
+global $pdo;
 include('../includes/header.php');
 include('../includes/config.php');
 
