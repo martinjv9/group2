@@ -93,16 +93,32 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){ // Check if submit button was clicked
         $hashed_password = password_hash($salt . $_POST["password"], PASSWORD_DEFAULT);
         // echo("password hashed");
 
-        $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, birth_date, username, email, salt, password_hash) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$firstName, $lastName, $birthday, $username, $email, $salt, $hashed_password]);
+        $activation_token = bin2hex(random_bytes(16));
+        $activation_token_hash = hash('sha256', $activation_token);
+
+        $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, birth_date, username, email, salt, password_hash, account_activation_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$firstName, $lastName, $birthday, $username, $email, $salt, $hashed_password, $activation_token_hash]);
+
+        $mail = include("../utilities/mailer.php");
 
 
-        //TODO: EMAIL VERIFICATION
+        $mail->setFrom("noreply@example.com");
+        $mail->addAddress($email);
+        $mail->Subject = "Account Activation";
+
+        $mail->Body = <<<END
+    Click <a href=http://localhost:63342/group2/views/activate_account.php?token=$activation_token>here</a> to activate your account.<br>
+    END;
+
+        try {
+            $mail->send();
+        }catch (Exception $e){
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            exit;
+        }
 
 
-        echo "<p>User registered successfully.</p><form action='../views/login.php' method='get'>
-                <button type='submit' name='submit' class='btn btn-primary'>Go Back to login</button>
-              </form>";
+        echo "<p>Registration Successful. Please check your inbox for email verification.</p>";
 
     } else {
         foreach($errArray as $filed => $error) {

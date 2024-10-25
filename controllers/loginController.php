@@ -31,7 +31,7 @@ function login($user, $password): void
 function timeout($user, $username) {
     global $pdo;
 
-    if($user['login_attemps'] > 3) {
+    if($user['login_attemps'] > 2) {
         date_default_timezone_set('America/Los_Angeles');
         $current_time = time();
         $stmt = $pdo->prepare("SELECT last_login FROM users WHERE username = ?");
@@ -73,7 +73,7 @@ if(isset($_POST['login_submit'])){
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
-        if($user){
+        if($user && $user["account_activation_hash"] === null){
 
             if(timeout($user, $username)) {
                 echo "Time out for 5 minutes";
