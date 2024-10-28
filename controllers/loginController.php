@@ -61,7 +61,7 @@ function timeout($user, $username) {
 }
 
 
-if(isset($_POST['login_submit'])){
+if($_SERVER["REQUEST_METHOD"] == "POST"){
     $username = $_POST['username'];
     $password = $_POST['password'];
 
@@ -74,7 +74,6 @@ if(isset($_POST['login_submit'])){
         $user = $stmt->fetch();
 
         if($user && $user["account_activation_hash"] === null){
-
             if(timeout($user, $username)) {
                 echo "Time out for 5 minutes";
                 return;
@@ -85,7 +84,11 @@ if(isset($_POST['login_submit'])){
             echo "<p>Invalid Credentials</p><form action='../views/login.php' method='get'>
                 <button type='submit' name='submit' class='btn btn-primary'>Go Back to login</button>
               </form>";
+            die();
         }
     }
+    echo "<p>Invalid Credentials</p><form action='../views/login.php' method='get'>
+                <button type='submit' name='submit' class='btn btn-primary'>Go Back to login</button>
+              </form>";
 
 }
