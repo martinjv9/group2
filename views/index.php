@@ -7,9 +7,6 @@ if (isset($_SESSION["user_id"])){
     $stmt->execute([$_SESSION['user_id']]);
     $user = $stmt->fetch();
 }
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -23,15 +20,13 @@ if (isset($_SESSION["user_id"])){
 </head>
 <body>
     <?php if (isset($user)){
-        $loginCount = $user['login_count'] + 1;
-
-        echo ("<p>\"Hi, {$user['first_name']} {$user['last_name']}\", \"You have logged in {$loginCount} times\" and \"Last login date: {$user['last_login']}\"</p>\n");
-        echo ("<p><a href=\"../views/logout.php\">Log out</a></p>\n");
-
+        echo ('<p><a href="../utilities/download.php" class="btn btn-primary">Download Confidential File</a></p>');
+        echo ('<p><a href="../views/logout.php" class="btn btn-primary">Log out</a></p>');
+        // update login count, last login, and reset login attemps back to zero.
         $updateStmt = $pdo->prepare("UPDATE users SET login_count = login_count + 1, last_login = now(), login_attemps = 0 WHERE idusers = ?");
         $updateStmt->execute([$user['idusers']]);
     } else {
-        echo ("<p><a href=\"../views/login.php\">Login</a> or <a href=\"../views/register.php\">Sign up</a></p>\n");
+        echo ('<p><a href="../views/login.php" class="btn btn-primary">Login</a> or <a href="../views/register.php" class="btn btn-primary">Sign up</a></p>');
     }
 
     ?>
