@@ -1,20 +1,23 @@
 <?php
 global $pdo;
 
+// Grab activation token from url
 $token = $_GET["token"];
 $token_hash = hash("sha256", $token);
 
 include("../includes/config.php");
 
-
+// Grab user based on token hash
 $stmt = $pdo->prepare("SELECT * FROM users WHERE account_activation_hash = ?");
 $stmt->execute([$token_hash]);
 $user = $stmt->fetch();
 
+// Check if user exist
 if($user == NULL) {
     die("Token doesn't exist");
 }
 
+// Make activation token hash to null to represent user is active.
 $updateStmt = $pdo->prepare("UPDATE users SET account_activation_hash = NULL WHERE idusers = ?");
 $updateStmt->execute([$user["idusers"]]);
 

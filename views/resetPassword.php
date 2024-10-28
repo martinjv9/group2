@@ -1,25 +1,30 @@
 <?php
 global $pdo;
 
+// Grab token from url
 $token = $_GET["token"];
+
+// Hash token
 $token_hash = hash("sha256", $token);
 
 include("../includes/config.php");
 
-
+// Grab user based on token bash
 $stmt = $pdo->prepare("SELECT * FROM users WHERE reset_token_hash = ?");
 $stmt->execute([$token_hash]);
 $user = $stmt->fetch();
 
+// Check if user exists
 if($user == NULL) {
     die("Token doesn't exist");
 }
 
+// Check if reset token has expired
 if (strtotime($user["reset_token_expires_at"]) <= time()) {
     die("token expired");
 }
 
-echo "token is valid and hasn't expired";
+//echo "token is valid and hasn't expired";
 
 ?>
 
