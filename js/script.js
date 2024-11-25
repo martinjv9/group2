@@ -1,4 +1,39 @@
+// Password strength validation
+const passwordField = document.getElementById("password");
+const passwordStrengthIndicator = document.getElementById("password_strength");
 
+if (passwordField) {
+    passwordField.addEventListener("input", () => {
+        const value = passwordField.value;
+        const strength = evaluatePasswordStrength(value);
+        passwordStrengthIndicator.innerHTML = strength.message;
+        passwordStrengthIndicator.style.color = strength.color;
+    });
+}
+
+/**
+ * Evaluates password strength based on complexity.
+ * @param {string} password - The password to evaluate.
+ * @returns {Object} - An object containing a strength message and corresponding color.
+ */
+function evaluatePasswordStrength(password) {
+    // Strength levels regex
+    const weakRegex = /^[a-zA-Z0-9]{1,7}$/; // Weak: Less than 8 characters, simple
+    const mediumRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,15}$/; // Medium: Letters and numbers, 8-15 chars
+    const specialChars = "!@#$%^&*-_=+.'\"{}`~";
+    const strongRegex = new RegExp(`^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[${specialChars}])[a-zA-Z0-9${specialChars}]{8,}$`);
+
+    // Check the password against the regexes
+    if (strongRegex.test(password)) {
+        return { message: "Strong password", color: "green" };
+    } else if (mediumRegex.test(password)) {
+        return { message: "Medium strength password", color: "orange" };
+    } else if (password.length > 0) {
+        return { message: "Weak password", color: "red" };
+    } else {
+        return { message: "", color: "" };
+    }
+}
 
 const register_form = document.getElementById("register_form");
 if(register_form) {
@@ -9,6 +44,8 @@ if(register_form) {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     const password_confirmation = document.getElementById("password_confirmation");
+    const security_question = document.getElementById("security_question");
+    const security_answer = document.getElementById("security_answer");
 
     const firstName_error = document.getElementById("firstName_error");
     const lastName_error = document.getElementById("lastName_error");
@@ -17,6 +54,8 @@ if(register_form) {
     const email_error = document.getElementById("email_error");
     const password_error = document.getElementById("password_error");
     const password_confirmation_error = document.getElementById("password_confirmation_error");
+    const security_question_error = document.getElementById("security_question_error");
+    const security_answer_error = document.getElementById("security_answer_error");
 
     register_form.addEventListener('submit', (e) => {
 
@@ -28,6 +67,9 @@ if(register_form) {
         email_error.innerHTML = "";
         password_error.innerHTML = "";
         password_confirmation_error.innerHTML = "";
+        security_question_error.innerHTML = "";
+        security_answer_error.innerHTML = "";
+
 
         if(firstName.value === "" || firstName.value == null)
         {
@@ -58,19 +100,17 @@ if(register_form) {
             email_error.innerHTML = "Valid Email name is required";
         }
 
-        if(password.value.length < 8)
-        {
+        if (password.value.length < 8) {
             e.preventDefault();
-            password_error.innerHTML = "Password must more than 8 characters";
+            password_error.innerHTML = "Password must be at least 8 characters long";
         }
 
-        // Validate password contains at least one letter and one number
-        const letter_check = /[a-zA-Z]/; // Regular expression for letters
-        const number_check = /[0-9]/; // Regular expression for numbers
+        const letter_check = /[a-zA-Z]/;
+        const number_check = /[0-9]/;
 
         if (!letter_check.test(password.value) || !number_check.test(password.value)) {
             e.preventDefault();
-            password_error.innerHTML = "Password must contain at least one letter and one number";
+            //password_error.innerHTML = "Password must contain at least one letter and one number";
         }
 
         if(password_confirmation.value === "" || password_confirmation.value == null) {
@@ -82,6 +122,16 @@ if(register_form) {
         if (password.value !== password_confirmation.value) {
             e.preventDefault();
             password_confirmation_error.innerHTML = "Passwords do not match";
+        }
+
+        if (security_question.value === "") {
+            e.preventDefault();
+            security_question_error.innerHTML = "Please select a security question.";
+        }
+
+        if (security_answer.value.trim() === "") {
+            e.preventDefault();
+            security_answer_error.innerHTML = "Answer to the security question is required.";
         }
     })
 }

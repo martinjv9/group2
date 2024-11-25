@@ -7,7 +7,20 @@ $isValid = true;
 $errArray = array(); // To store error messages
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){ // Check if submit button was clicked
+    $security_question = $_POST['security_question'];
+    $security_answer = $_POST['security_answer'];
     $firstName = $_POST['firstName'];
+
+    // Validate security question and answer
+    if (empty($security_question)) {
+        $isValid = false;
+        $errArray['security_question'] = "Please select a security question.";
+    }
+
+    if (empty($security_answer)) {
+        $isValid = false;
+        $errArray['security_answer'] = "Answer to the security question is required.";
+    }
 
     // Validate first name
     if (!preg_match("/^[a-zA-Z ]*$/",$firstName)) {
@@ -85,19 +98,29 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){ // Check if submit button was clicked
         $errArray['password'] = "Passwords do not match.";
     }
 
-    // TODO: SECURITY QUESTIONS AND ANSWER
+    // Validate security question and answer
+    if (empty($security_question)) {
+        $isValid = false;
+        $errArray['security_question'] = "Please select a security question.";
+    }
+
+    if (empty($security_answer)) {
+        $isValid = false;
+        $errArray['security_answer'] = "Answer to the security question is required.";
+    }
 
     if($isValid){
         $length = 16;
         $salt = bin2hex(random_bytes($length)); // Generate a random Salt
         $hashed_password = password_hash($salt . $_POST["password"], PASSWORD_DEFAULT);
-        // echo("password hashed");
+        $hashed_answer = password_hash($security_answer, PASSWORD_DEFAULT);
+
 
         $activation_token = bin2hex(random_bytes(16));
         $activation_token_hash = hash('sha256', $activation_token);
 
-        $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, birth_date, username, email, salt, password_hash, account_activation_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$firstName, $lastName, $birthday, $username, $email, $salt, $hashed_password, $activation_token_hash]);
+        $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, birth_date, username, email, salt, password_hash, account_activation_hash, security_question, security_answer_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$firstName, $lastName, $birthday, $username, $email, $salt, $hashed_password, $activation_token_hash, $security_question, $hashed_answer]);
 
         $mail = include("../utilities/mailer.php");
 

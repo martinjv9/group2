@@ -29,7 +29,7 @@
         <button type="submit" class="btn btn-primary" name="login_submit">Login</button>
         <input type="button" id="login" class="btn btn-primary" value="New User? Sign Up" onclick="location.href='register.php'">
     </form>
-    <a href="../views/forgotPasswordUsername.php">Forgot Username or Password?</a>
+    <a href="../views/validateSecurityQuestion.php">Forgot Username or Password?</a>
 </div>
 
 <?php include('../includes/footer.php'); ?>

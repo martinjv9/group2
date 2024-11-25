@@ -15,7 +15,7 @@ $stmt->execute([$token_hash]);
 $user = $stmt->fetch();
 
 // Check if user exists
-if($user == NULL) {
+if(!$user) {
     die("Token doesn't exist");
 }
 

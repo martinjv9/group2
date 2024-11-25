@@ -11,12 +11,22 @@ function login($user, $password): void
 
     if(password_verify($salt . $password, $passwordHash)){
         session_start();
-
         session_regenerate_id();
 
         $_SESSION["user_id"] = $user["idusers"];
 
-        header("Location: ../views/index.php");
+        // Generate a one-time code
+        $mfa_code = rand(100000, 999999);
+        $_SESSION["mfa_pending"] = true;
+        $_SESSION["mfa_code"] = $mfa_code;
+        $_SESSION["mfa_code_expiry"] = time() + 300;
+
+        // Send the code via email
+        $email = $user['email'];
+        sendMfaCode($email, $mfa_code);
+
+        // Redirect to MFA verification page
+        header("Location: ../views/mfa_verify.php");
         exit;
 
     } else {
@@ -25,6 +35,25 @@ function login($user, $password): void
         echo "<div class=\"container\"><p>Invalid Credentials</p><form action='../views/login.php' method='get'><div class=\"form-group\">
                 <button type='submit' name='submit' class=\"btn btn-primary\">Go Back to login</button></div>
               </form></div>";
+    }
+}
+
+function sendMfaCode($email, $mfa_code): void
+{
+    include("../utilities/mailer.php");
+
+    $mail = include("../utilities/mailer.php");
+    $mail->setFrom("noreply@example.com");
+    $mail->addAddress($email);
+    $mail->Subject = "Your One-Time Code";
+
+    $mail->Body = "Your one-time code is: $mfa_code";
+
+    try {
+        $mail->send();
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        exit;
     }
 }
 

@@ -20,7 +20,6 @@ if($user == NULL) {
 // Make activation token hash to null to represent user is active.
 $updateStmt = $pdo->prepare("UPDATE users SET account_activation_hash = NULL WHERE idusers = ?");
 $updateStmt->execute([$user["idusers"]]);
-
 ?>
 
 <!DOCTYPE html>
