@@ -1,8 +1,8 @@
 <?php
 
     // Edit these to work for your DataBase
-    $host = "localhost";
-    $dbname = "cs424";
+    $host = "127.0.0.1";
+    $dbname = "***REMOVED***";
     $username = "root";
     $password = "***REMOVED***";
 
@@ -14,7 +14,6 @@ try {
     // Set some common PDO attributes (error reporting mode and fetch mode)
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  // Enable exceptions on errors
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);  // Set the default fetch mode to associative arrays
-
     // echo "Connected successfully to the database!";
 } catch (PDOException $e) {
     // If connection fails, display the error message

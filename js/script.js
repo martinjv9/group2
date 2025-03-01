@@ -220,5 +220,3 @@ if(reset_password_form) {
     })
 
 }
-
-
