@@ -1,5 +1,5 @@
 <?php
-include("../includes/config.php");
+include("../config/config.php");
 global $pdo;
 
 $email = $_POST['email'];

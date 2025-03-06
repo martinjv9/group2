@@ -1,6 +1,7 @@
 <?php
-include('../includes/config.php');
-session_start();
+include('../config/config.php');
+require_once '../includes/session.php';
+;
 global $pdo;
 
 if (isset($_SESSION["user_id"])) {

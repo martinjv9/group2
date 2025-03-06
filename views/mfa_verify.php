@@ -1,10 +1,17 @@
 <?php
-session_start();
+require_once '../includes/session.php';
 
 if (!isset($_SESSION["mfa_pending"]) || !$_SESSION["mfa_pending"]) {
     header("Location: login.php");
     exit;
 }
+
+session_start();
+if ($_SESSION["mfa_pending"]) {
+    session_regenerate_id(true); // Regenerate after MFA
+    $_SESSION["mfa_pending"] = false;
+}
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_code = $_POST['mfa_code'];
@@ -46,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h3>Multi-Factor Authentication</h3>
     <p>Please enter the one-time code sent to your email.</p>
     <?php if (isset($error)): ?>
-        <div class="alert alert-danger"><?php echo $error; ?></div>
+        <div class="alert alert-danger"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
     <?php endif; ?>
     <form action="mfa_verify.php" method="post">
         <div class="form-group">

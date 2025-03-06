@@ -1,17 +1,18 @@
 <?php
-include('../includes/config.php');
+require_once '../includes/session.php';
+$config = include('../config/config.php');
+
 global $pdo;
 
 function login($user, $password): void
 {
     global $pdo;
 
-    $salt = $user['salt'];
     $passwordHash = $user['password_hash'];
 
-    if(password_verify($salt . $password, $passwordHash)){
-        session_start();
-        session_regenerate_id();
+    if(password_verify($password, $passwordHash)){
+        
+        session_regenerate_id(true); // Secure session ID after login
 
         $_SESSION["user_id"] = $user["idusers"];
 
@@ -91,9 +92,15 @@ function timeout($user, $username) {
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("CSRF token mismatch!");
+    }
+    
+
     $username = $_POST['username'];
     $password = $_POST['password'];
-
+    $errArray = [];
+    
     // Validate username
     if (!preg_match('/^[a-zA-Z0-9]{7,50}$/', $username)) {
         $errArray['username'] = "Username invalid";

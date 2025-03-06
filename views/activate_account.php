@@ -5,7 +5,7 @@ global $pdo;
 $token = $_GET["token"];
 $token_hash = hash("sha256", $token);
 
-include("../includes/config.php");
+include("../config/config.php");
 
 // Grab user based on token hash
 $stmt = $pdo->prepare("SELECT * FROM users WHERE account_activation_hash = ?");

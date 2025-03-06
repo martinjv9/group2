@@ -7,7 +7,7 @@ $token = $_GET["token"];
 // Hash token
 $token_hash = hash("sha256", $token);
 
-include("../includes/config.php");
+include("../config/config.php");
 
 // Grab user based on token bash
 $stmt = $pdo->prepare("SELECT * FROM users WHERE reset_token_hash = ?");

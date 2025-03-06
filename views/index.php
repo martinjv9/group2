@@ -1,7 +1,8 @@
 <?php
-include('../includes/config.php');
+include('../config/config.php');
 global $pdo;
-session_start();
+require_once '../includes/session.php';
+;
 
 if (!isset($_SESSION["user_id"])) {
     // Redirect unauthenticated users to the login page

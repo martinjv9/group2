@@ -5,7 +5,7 @@ $token = $_POST["token"];
 $token_hash = hash("sha256", $token);
 $isValid = true;
 
-include("../includes/config.php");
+include("../config/config.php");
 
 
 $stmt = $pdo->prepare("SELECT * FROM users WHERE reset_token_hash = ?");
@@ -41,13 +41,10 @@ if($_POST["password"] !== $_POST["password_confirmation"]){
 }
 
 if($isValid){
-    $length = 16;
-    $salt = bin2hex(random_bytes($length)); // Generate a random Salt
-    $hashed_password = password_hash($salt . $_POST["password"], PASSWORD_DEFAULT);
-    // echo("password hashed");
+    $hashed_password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-    $stmt = $pdo->prepare("UPDATE users SET password_hash = ?, salt = ?, reset_token_hash = NULL, reset_token_expires_at = NULL WHERE idusers = ?");
-    $stmt->execute([$hashed_password, $salt, $user['idusers']]);
+    $stmt = $pdo->prepare("UPDATE users SET password_hash = ?, reset_token_hash = NULL, reset_token_expires_at = NULL WHERE idusers = ?");
+    $stmt->execute([$hashed_password, $user['idusers']]);
 
     echo "<p>Password updated. You can now login.</p><form action='../views/login.php' method='get'>
                 <button type='submit' name='submit' class='btn btn-primary'>Go Back to login</button>
