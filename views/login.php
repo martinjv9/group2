@@ -1,3 +1,8 @@
+<?php 
+
+$config = include('../config/config.php');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +29,7 @@
             <span id="password_error"></span>
         </div>
         <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="6LcUtm4qAAAAAIK6S7BLOhaLEXqdF44WZdmwh010"></div>
+            <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars($config['recaptcha']['site_key']); ?>"></div>
         </div>
         <button type="submit" class="btn btn-primary" name="login_submit">Login</button>
         <input type="button" id="login" class="btn btn-primary" value="New User? Sign Up" onclick="location.href='register.php'">

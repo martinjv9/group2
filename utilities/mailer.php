@@ -5,6 +5,8 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
 include("../vendor/autoload.php");
+$config = include('/var/www/config.php');
+
 
 $mail = new PHPMailer(true);
 
@@ -19,11 +21,11 @@ $mail->SMTPOptions = array(
 $mail->isSMTP();
 $mail->SMTPAuth = true;
 
-$mail->Host = '***REMOVED***';
+$mail->Host = $config['smtp']['host'];
 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-$mail->Port = 587;
-$mail->Username = "***REMOVED***";
-$mail->Password = "***REMOVED***";
+$mail->Port = $config['smtp']['port'];
+$mail->Username = $config['smtp']['username'];
+$mail->Password = $config['smtp']['password'];
 
 $mail->isHTML(true);
 
